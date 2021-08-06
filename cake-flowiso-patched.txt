@@ -1,0 +1,665 @@
+uname -a: Linux apu2a 5.10.31+ #3 SMP Sat Jul 24 21:30:02 CEST 2021 x86_64 x86_64 x86_64 GNU/Linux
+tc -V: tc utility, iproute2-ss200127
+
+fq_codel flow hash keys src (two src IPs)
+-----------------------------------------
+
+qdisc htb 1: root refcnt 2 r2q 10 default 0xfffe direct_packets_stat 0 direct_qlen 1000
+qdisc fq_codel fffe: parent 1:fffe limit 10240p flows 65536 quantum 1514 target 5.0ms interval 100.0ms memory_limit 32Mb ecn 
+filter protocol all pref 49152 flow chain 0 
+filter protocol all pref 49152 flow chain 0 handle 0x1 hash keys src divisor 65536 baseclass fffe:1 
+iperf3 -P 1 -C cubic -B 10.7.0.1 -c 10.7.1.1 -p 5101
+iperf3 -P 2 -C reno -B 10.7.0.2 -c 10.7.1.1 -p 5102
+
+Connecting to host 10.7.1.1, port 5101
+[  5] local 10.7.0.1 port 53943 connected to 10.7.1.1 port 5101
+[ ID] Interval           Transfer     Bitrate         Retr  Cwnd
+[  5]   0.00-10.00  sec  28.7 MBytes  24.1 Mbits/sec  189   21.2 KBytes       
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-10.00  sec  28.7 MBytes  24.1 Mbits/sec  189             sender
+[  5]   0.00-10.01  sec  28.5 MBytes  23.9 Mbits/sec                  receiver
+
+iperf Done.
+
+Connecting to host 10.7.1.1, port 5102
+[  5] local 10.7.0.2 port 48683 connected to 10.7.1.1 port 5102
+[  7] local 10.7.0.2 port 36153 connected to 10.7.1.1 port 5102
+[ ID] Interval           Transfer     Bitrate         Retr  Cwnd
+[  5]   0.00-10.00  sec  15.9 MBytes  13.3 Mbits/sec  257   17.0 KBytes       
+[  7]   0.00-10.00  sec  14.3 MBytes  12.0 Mbits/sec  219   8.48 KBytes       
+[SUM]   0.00-10.00  sec  30.1 MBytes  25.3 Mbits/sec  476             
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-10.00  sec  15.9 MBytes  13.3 Mbits/sec  257             sender
+[  5]   0.00-10.01  sec  14.5 MBytes  12.2 Mbits/sec                  receiver
+[  7]   0.00-10.00  sec  14.3 MBytes  12.0 Mbits/sec  219             sender
+[  7]   0.00-10.01  sec  14.0 MBytes  11.7 Mbits/sec                  receiver
+[SUM]   0.00-10.00  sec  30.1 MBytes  25.3 Mbits/sec  476             sender
+[SUM]   0.00-10.01  sec  28.5 MBytes  23.9 Mbits/sec                  receiver
+
+iperf Done.
+
+cake flowblind (two src IPs)
+----------------------------
+
+qdisc cake 8043: root refcnt 2 bandwidth 50Mbit diffserv3 flowblind nonat nowash no-ack-filter split-gso rtt 100.0ms raw overhead 0 
+iperf3 -P 1 -C cubic -B 10.7.0.1 -c 10.7.1.1 -p 5101
+iperf3 -P 2 -C reno -B 10.7.0.2 -c 10.7.1.1 -p 5102
+
+Connecting to host 10.7.1.1, port 5101
+[  5] local 10.7.0.1 port 56365 connected to 10.7.1.1 port 5101
+[ ID] Interval           Transfer     Bitrate         Retr  Cwnd
+[  5]   0.00-10.00  sec  17.7 MBytes  14.8 Mbits/sec  182   11.3 KBytes       
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-10.00  sec  17.7 MBytes  14.8 Mbits/sec  182             sender
+[  5]   0.00-10.01  sec  17.6 MBytes  14.7 Mbits/sec                  receiver
+
+iperf Done.
+
+Connecting to host 10.7.1.1, port 5102
+[  5] local 10.7.0.2 port 49163 connected to 10.7.1.1 port 5102
+[  7] local 10.7.0.2 port 41369 connected to 10.7.1.1 port 5102
+[ ID] Interval           Transfer     Bitrate         Retr  Cwnd
+[  5]   0.00-10.00  sec  19.3 MBytes  16.2 Mbits/sec  245   14.1 KBytes       
+[  7]   0.00-10.00  sec  20.8 MBytes  17.5 Mbits/sec  238   15.6 KBytes       
+[SUM]   0.00-10.00  sec  40.1 MBytes  33.7 Mbits/sec  483             
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-10.00  sec  19.3 MBytes  16.2 Mbits/sec  245             sender
+[  5]   0.00-10.01  sec  19.2 MBytes  16.1 Mbits/sec                  receiver
+[  7]   0.00-10.00  sec  20.8 MBytes  17.5 Mbits/sec  238             sender
+[  7]   0.00-10.01  sec  20.3 MBytes  17.0 Mbits/sec                  receiver
+[SUM]   0.00-10.00  sec  40.1 MBytes  33.7 Mbits/sec  483             sender
+[SUM]   0.00-10.01  sec  39.5 MBytes  33.1 Mbits/sec                  receiver
+
+iperf Done.
+
+cake flows (two src IPs)
+------------------------
+
+qdisc cake 8044: root refcnt 2 bandwidth 50Mbit diffserv3 flows nonat nowash no-ack-filter split-gso rtt 100.0ms raw overhead 0 
+iperf3 -P 1 -C cubic -B 10.7.0.1 -c 10.7.1.1 -p 5101
+iperf3 -P 2 -C reno -B 10.7.0.2 -c 10.7.1.1 -p 5102
+
+Connecting to host 10.7.1.1, port 5101
+[  5] local 10.7.0.1 port 60095 connected to 10.7.1.1 port 5101
+[ ID] Interval           Transfer     Bitrate         Retr  Cwnd
+[  5]   0.00-10.00  sec  19.1 MBytes  16.0 Mbits/sec  169   11.3 KBytes       
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-10.00  sec  19.1 MBytes  16.0 Mbits/sec  169             sender
+[  5]   0.00-10.00  sec  19.0 MBytes  16.0 Mbits/sec                  receiver
+
+iperf Done.
+
+Connecting to host 10.7.1.1, port 5102
+[  5] local 10.7.0.2 port 34117 connected to 10.7.1.1 port 5102
+[  7] local 10.7.0.2 port 60045 connected to 10.7.1.1 port 5102
+[ ID] Interval           Transfer     Bitrate         Retr  Cwnd
+[  5]   0.00-10.00  sec  19.1 MBytes  16.0 Mbits/sec  219   12.7 KBytes       
+[  7]   0.00-10.00  sec  19.1 MBytes  16.0 Mbits/sec  215   12.7 KBytes       
+[SUM]   0.00-10.00  sec  38.2 MBytes  32.0 Mbits/sec  434             
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-10.00  sec  19.1 MBytes  16.0 Mbits/sec  219             sender
+[  5]   0.00-10.00  sec  19.0 MBytes  15.9 Mbits/sec                  receiver
+[  7]   0.00-10.00  sec  19.1 MBytes  16.0 Mbits/sec  215             sender
+[  7]   0.00-10.00  sec  19.0 MBytes  15.9 Mbits/sec                  receiver
+[SUM]   0.00-10.00  sec  38.2 MBytes  32.0 Mbits/sec  434             sender
+[SUM]   0.00-10.00  sec  38.0 MBytes  31.9 Mbits/sec                  receiver
+
+iperf Done.
+
+cake hosts (two src IPs)
+------------------------
+
+qdisc cake 8045: root refcnt 2 bandwidth 50Mbit diffserv3 hosts nonat nowash no-ack-filter split-gso rtt 100.0ms raw overhead 0 
+iperf3 -P 1 -C cubic -B 10.7.0.1 -c 10.7.1.1 -p 5101
+iperf3 -P 2 -C reno -B 10.7.0.2 -c 10.7.1.1 -p 5102
+
+Connecting to host 10.7.1.1, port 5101
+[  5] local 10.7.0.1 port 47399 connected to 10.7.1.1 port 5101
+[ ID] Interval           Transfer     Bitrate         Retr  Cwnd
+[  5]   0.00-10.00  sec  28.6 MBytes  24.0 Mbits/sec  121   14.1 KBytes       
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-10.00  sec  28.6 MBytes  24.0 Mbits/sec  121             sender
+[  5]   0.00-10.00  sec  28.5 MBytes  23.9 Mbits/sec                  receiver
+
+iperf Done.
+
+Connecting to host 10.7.1.1, port 5102
+[  5] local 10.7.0.2 port 50211 connected to 10.7.1.1 port 5102
+[  7] local 10.7.0.2 port 37781 connected to 10.7.1.1 port 5102
+[ ID] Interval           Transfer     Bitrate         Retr  Cwnd
+[  5]   0.00-10.00  sec  15.1 MBytes  12.7 Mbits/sec  289   9.90 KBytes       
+[  7]   0.00-10.00  sec  14.0 MBytes  11.8 Mbits/sec  287   8.48 KBytes       
+[SUM]   0.00-10.00  sec  29.1 MBytes  24.4 Mbits/sec  576             
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-10.00  sec  15.1 MBytes  12.7 Mbits/sec  289             sender
+[  5]   0.00-10.00  sec  14.6 MBytes  12.2 Mbits/sec                  receiver
+[  7]   0.00-10.00  sec  14.0 MBytes  11.8 Mbits/sec  287             sender
+[  7]   0.00-10.00  sec  14.0 MBytes  11.7 Mbits/sec                  receiver
+[SUM]   0.00-10.00  sec  29.1 MBytes  24.4 Mbits/sec  576             sender
+[SUM]   0.00-10.00  sec  28.5 MBytes  23.9 Mbits/sec                  receiver
+
+iperf Done.
+
+cake srchost (two src IPs)
+--------------------------
+
+qdisc cake 8046: root refcnt 2 bandwidth 50Mbit diffserv3 srchost nonat nowash no-ack-filter split-gso rtt 100.0ms raw overhead 0 
+iperf3 -P 1 -C cubic -B 10.7.0.1 -c 10.7.1.1 -p 5101
+iperf3 -P 2 -C reno -B 10.7.0.2 -c 10.7.1.1 -p 5102
+
+Connecting to host 10.7.1.1, port 5101
+[  5] local 10.7.0.1 port 33119 connected to 10.7.1.1 port 5101
+[ ID] Interval           Transfer     Bitrate         Retr  Cwnd
+[  5]   0.00-10.00  sec  28.6 MBytes  24.0 Mbits/sec  122   14.1 KBytes       
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-10.00  sec  28.6 MBytes  24.0 Mbits/sec  122             sender
+[  5]   0.00-10.00  sec  28.5 MBytes  23.9 Mbits/sec                  receiver
+
+iperf Done.
+
+Connecting to host 10.7.1.1, port 5102
+[  5] local 10.7.0.2 port 39347 connected to 10.7.1.1 port 5102
+[  7] local 10.7.0.2 port 51885 connected to 10.7.1.1 port 5102
+[ ID] Interval           Transfer     Bitrate         Retr  Cwnd
+[  5]   0.00-10.00  sec  16.6 MBytes  13.9 Mbits/sec  291   7.07 KBytes       
+[  7]   0.00-10.00  sec  13.3 MBytes  11.1 Mbits/sec  266   7.07 KBytes       
+[SUM]   0.00-10.00  sec  29.9 MBytes  25.1 Mbits/sec  557             
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-10.00  sec  16.6 MBytes  13.9 Mbits/sec  291             sender
+[  5]   0.00-10.00  sec  15.3 MBytes  12.8 Mbits/sec                  receiver
+[  7]   0.00-10.00  sec  13.3 MBytes  11.1 Mbits/sec  266             sender
+[  7]   0.00-10.00  sec  13.2 MBytes  11.1 Mbits/sec                  receiver
+[SUM]   0.00-10.00  sec  29.9 MBytes  25.1 Mbits/sec  557             sender
+[SUM]   0.00-10.00  sec  28.5 MBytes  23.9 Mbits/sec                  receiver
+
+iperf Done.
+
+cake dual-srchost (two src IPs)
+-------------------------------
+
+qdisc cake 8047: root refcnt 2 bandwidth 50Mbit diffserv3 dual-srchost nonat nowash no-ack-filter split-gso rtt 100.0ms raw overhead 0 
+iperf3 -P 1 -C cubic -B 10.7.0.1 -c 10.7.1.1 -p 5101
+iperf3 -P 2 -C reno -B 10.7.0.2 -c 10.7.1.1 -p 5102
+
+Connecting to host 10.7.1.1, port 5101
+[  5] local 10.7.0.1 port 53075 connected to 10.7.1.1 port 5101
+[ ID] Interval           Transfer     Bitrate         Retr  Cwnd
+[  5]   0.00-10.00  sec  28.6 MBytes  24.0 Mbits/sec  126   17.0 KBytes       
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-10.00  sec  28.6 MBytes  24.0 Mbits/sec  126             sender
+[  5]   0.00-10.00  sec  28.5 MBytes  23.9 Mbits/sec                  receiver
+
+iperf Done.
+
+Connecting to host 10.7.1.1, port 5102
+[  5] local 10.7.0.2 port 41181 connected to 10.7.1.1 port 5102
+[  7] local 10.7.0.2 port 45769 connected to 10.7.1.1 port 5102
+[ ID] Interval           Transfer     Bitrate         Retr  Cwnd
+[  5]   0.00-10.00  sec  14.3 MBytes  12.0 Mbits/sec  225   12.7 KBytes       
+[  7]   0.00-10.00  sec  14.3 MBytes  12.0 Mbits/sec  219   8.48 KBytes       
+[SUM]   0.00-10.00  sec  28.6 MBytes  24.0 Mbits/sec  444             
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-10.00  sec  14.3 MBytes  12.0 Mbits/sec  225             sender
+[  5]   0.00-10.00  sec  14.3 MBytes  12.0 Mbits/sec                  receiver
+[  7]   0.00-10.00  sec  14.3 MBytes  12.0 Mbits/sec  219             sender
+[  7]   0.00-10.00  sec  14.3 MBytes  12.0 Mbits/sec                  receiver
+[SUM]   0.00-10.00  sec  28.6 MBytes  24.0 Mbits/sec  444             sender
+[SUM]   0.00-10.00  sec  28.5 MBytes  23.9 Mbits/sec                  receiver
+
+iperf Done.
+
+cake dsthost (two src IPs)
+--------------------------
+
+qdisc cake 8048: root refcnt 2 bandwidth 50Mbit diffserv3 dsthost nonat nowash no-ack-filter split-gso rtt 100.0ms raw overhead 0 
+iperf3 -P 1 -C cubic -B 10.7.0.1 -c 10.7.1.1 -p 5101
+iperf3 -P 2 -C reno -B 10.7.0.2 -c 10.7.1.1 -p 5102
+
+Connecting to host 10.7.1.1, port 5101
+[  5] local 10.7.0.1 port 43541 connected to 10.7.1.1 port 5101
+[ ID] Interval           Transfer     Bitrate         Retr  Cwnd
+[  5]   0.00-10.00  sec  16.9 MBytes  14.2 Mbits/sec  189   11.3 KBytes       
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-10.00  sec  16.9 MBytes  14.2 Mbits/sec  189             sender
+[  5]   0.00-10.01  sec  16.8 MBytes  14.1 Mbits/sec                  receiver
+
+iperf Done.
+
+Connecting to host 10.7.1.1, port 5102
+[  5] local 10.7.0.2 port 43121 connected to 10.7.1.1 port 5102
+[  7] local 10.7.0.2 port 33889 connected to 10.7.1.1 port 5102
+[ ID] Interval           Transfer     Bitrate         Retr  Cwnd
+[  5]   0.00-10.00  sec  19.6 MBytes  16.5 Mbits/sec  233   8.48 KBytes       
+[  7]   0.00-10.00  sec  21.4 MBytes  18.0 Mbits/sec  245   17.0 KBytes       
+[SUM]   0.00-10.00  sec  41.0 MBytes  34.4 Mbits/sec  478             
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-10.00  sec  19.6 MBytes  16.5 Mbits/sec  233             sender
+[  5]   0.00-10.01  sec  19.6 MBytes  16.4 Mbits/sec                  receiver
+[  7]   0.00-10.00  sec  21.4 MBytes  18.0 Mbits/sec  245             sender
+[  7]   0.00-10.01  sec  20.7 MBytes  17.3 Mbits/sec                  receiver
+[SUM]   0.00-10.00  sec  41.0 MBytes  34.4 Mbits/sec  478             sender
+[SUM]   0.00-10.01  sec  40.2 MBytes  33.7 Mbits/sec                  receiver
+
+iperf Done.
+
+cake dual-dsthost (two src IPs)
+-------------------------------
+
+qdisc cake 8049: root refcnt 2 bandwidth 50Mbit diffserv3 dual-dsthost nonat nowash no-ack-filter split-gso rtt 100.0ms raw overhead 0 
+iperf3 -P 1 -C cubic -B 10.7.0.1 -c 10.7.1.1 -p 5101
+iperf3 -P 2 -C reno -B 10.7.0.2 -c 10.7.1.1 -p 5102
+
+Connecting to host 10.7.1.1, port 5101
+[  5] local 10.7.0.1 port 35309 connected to 10.7.1.1 port 5101
+[ ID] Interval           Transfer     Bitrate         Retr  Cwnd
+[  5]   0.00-10.00  sec  19.1 MBytes  16.0 Mbits/sec  170   11.3 KBytes       
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-10.00  sec  19.1 MBytes  16.0 Mbits/sec  170             sender
+[  5]   0.00-10.00  sec  19.0 MBytes  16.0 Mbits/sec                  receiver
+
+iperf Done.
+
+Connecting to host 10.7.1.1, port 5102
+[  5] local 10.7.0.2 port 48773 connected to 10.7.1.1 port 5102
+[  7] local 10.7.0.2 port 53361 connected to 10.7.1.1 port 5102
+[ ID] Interval           Transfer     Bitrate         Retr  Cwnd
+[  5]   0.00-10.00  sec  19.1 MBytes  16.0 Mbits/sec  220   14.1 KBytes       
+[  7]   0.00-10.00  sec  19.1 MBytes  16.0 Mbits/sec  216   11.3 KBytes       
+[SUM]   0.00-10.00  sec  38.2 MBytes  32.0 Mbits/sec  436             
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-10.00  sec  19.1 MBytes  16.0 Mbits/sec  220             sender
+[  5]   0.00-10.00  sec  19.0 MBytes  15.9 Mbits/sec                  receiver
+[  7]   0.00-10.00  sec  19.1 MBytes  16.0 Mbits/sec  216             sender
+[  7]   0.00-10.00  sec  19.0 MBytes  15.9 Mbits/sec                  receiver
+[SUM]   0.00-10.00  sec  38.2 MBytes  32.0 Mbits/sec  436             sender
+[SUM]   0.00-10.00  sec  38.0 MBytes  31.9 Mbits/sec                  receiver
+
+iperf Done.
+
+fq_codel flow hash keys dst (two dst IPs)
+-----------------------------------------
+
+qdisc htb 1: root refcnt 2 r2q 10 default 0xfffe direct_packets_stat 0 direct_qlen 1000
+qdisc fq_codel fffe: parent 1:fffe limit 10240p flows 65536 quantum 1514 target 5.0ms interval 100.0ms memory_limit 32Mb ecn 
+filter protocol all pref 49152 flow chain 0 
+filter protocol all pref 49152 flow chain 0 handle 0x1 hash keys dst divisor 65536 baseclass fffe:1 
+iperf3 -P 1 -C cubic -B 10.7.0.1 -c 10.7.1.1 -p 5101
+iperf3 -P 2 -C reno -B 10.7.0.1 -c 10.7.1.2 -p 5102
+
+Connecting to host 10.7.1.1, port 5101
+[  5] local 10.7.0.1 port 35875 connected to 10.7.1.1 port 5101
+[ ID] Interval           Transfer     Bitrate         Retr  Cwnd
+[  5]   0.00-10.00  sec  28.7 MBytes  24.0 Mbits/sec  184   24.0 KBytes       
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-10.00  sec  28.7 MBytes  24.0 Mbits/sec  184             sender
+[  5]   0.00-10.01  sec  28.5 MBytes  23.9 Mbits/sec                  receiver
+
+iperf Done.
+
+Connecting to host 10.7.1.2, port 5102
+[  5] local 10.7.0.1 port 37299 connected to 10.7.1.2 port 5102
+[  7] local 10.7.0.1 port 33263 connected to 10.7.1.2 port 5102
+[ ID] Interval           Transfer     Bitrate         Retr  Cwnd
+[  5]   0.00-10.00  sec  15.9 MBytes  13.3 Mbits/sec  258   11.3 KBytes       
+[  7]   0.00-10.00  sec  14.4 MBytes  12.1 Mbits/sec  230   24.0 KBytes       
+[SUM]   0.00-10.00  sec  30.3 MBytes  25.4 Mbits/sec  488             
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-10.00  sec  15.9 MBytes  13.3 Mbits/sec  258             sender
+[  5]   0.00-10.01  sec  14.4 MBytes  12.1 Mbits/sec                  receiver
+[  7]   0.00-10.00  sec  14.4 MBytes  12.1 Mbits/sec  230             sender
+[  7]   0.00-10.01  sec  14.1 MBytes  11.8 Mbits/sec                  receiver
+[SUM]   0.00-10.00  sec  30.3 MBytes  25.4 Mbits/sec  488             sender
+[SUM]   0.00-10.01  sec  28.5 MBytes  23.9 Mbits/sec                  receiver
+
+iperf Done.
+
+cake flowblind (two dst IPs)
+----------------------------
+
+qdisc cake 804a: root refcnt 2 bandwidth 50Mbit diffserv3 flowblind nonat nowash no-ack-filter split-gso rtt 100.0ms raw overhead 0 
+iperf3 -P 1 -C cubic -B 10.7.0.1 -c 10.7.1.1 -p 5101
+iperf3 -P 2 -C reno -B 10.7.0.1 -c 10.7.1.2 -p 5102
+
+Connecting to host 10.7.1.1, port 5101
+[  5] local 10.7.0.1 port 52567 connected to 10.7.1.1 port 5101
+[ ID] Interval           Transfer     Bitrate         Retr  Cwnd
+[  5]   0.00-10.00  sec  16.7 MBytes  14.0 Mbits/sec  204   11.3 KBytes       
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-10.00  sec  16.7 MBytes  14.0 Mbits/sec  204             sender
+[  5]   0.00-10.00  sec  16.6 MBytes  13.9 Mbits/sec                  receiver
+
+iperf Done.
+
+Connecting to host 10.7.1.2, port 5102
+[  5] local 10.7.0.1 port 56593 connected to 10.7.1.2 port 5102
+[  7] local 10.7.0.1 port 41203 connected to 10.7.1.2 port 5102
+[ ID] Interval           Transfer     Bitrate         Retr  Cwnd
+[  5]   0.00-10.00  sec  19.6 MBytes  16.4 Mbits/sec  242   9.90 KBytes       
+[  7]   0.00-10.00  sec  21.8 MBytes  18.2 Mbits/sec  239   14.1 KBytes       
+[SUM]   0.00-10.00  sec  41.3 MBytes  34.7 Mbits/sec  481             
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-10.00  sec  19.6 MBytes  16.4 Mbits/sec  242             sender
+[  5]   0.00-10.01  sec  19.4 MBytes  16.3 Mbits/sec                  receiver
+[  7]   0.00-10.00  sec  21.8 MBytes  18.2 Mbits/sec  239             sender
+[  7]   0.00-10.01  sec  21.0 MBytes  17.6 Mbits/sec                  receiver
+[SUM]   0.00-10.00  sec  41.3 MBytes  34.7 Mbits/sec  481             sender
+[SUM]   0.00-10.01  sec  40.4 MBytes  33.9 Mbits/sec                  receiver
+
+iperf Done.
+
+cake flows (two dst IPs)
+------------------------
+
+qdisc cake 804b: root refcnt 2 bandwidth 50Mbit diffserv3 flows nonat nowash no-ack-filter split-gso rtt 100.0ms raw overhead 0 
+iperf3 -P 1 -C cubic -B 10.7.0.1 -c 10.7.1.1 -p 5101
+iperf3 -P 2 -C reno -B 10.7.0.1 -c 10.7.1.2 -p 5102
+
+Connecting to host 10.7.1.1, port 5101
+[  5] local 10.7.0.1 port 55685 connected to 10.7.1.1 port 5101
+[ ID] Interval           Transfer     Bitrate         Retr  Cwnd
+[  5]   0.00-10.00  sec  19.1 MBytes  16.0 Mbits/sec  167   9.90 KBytes       
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-10.00  sec  19.1 MBytes  16.0 Mbits/sec  167             sender
+[  5]   0.00-10.00  sec  19.0 MBytes  15.9 Mbits/sec                  receiver
+
+iperf Done.
+
+Connecting to host 10.7.1.2, port 5102
+[  5] local 10.7.0.1 port 32861 connected to 10.7.1.2 port 5102
+[  7] local 10.7.0.1 port 52235 connected to 10.7.1.2 port 5102
+[ ID] Interval           Transfer     Bitrate         Retr  Cwnd
+[  5]   0.00-10.00  sec  19.1 MBytes  16.0 Mbits/sec  219   9.90 KBytes       
+[  7]   0.00-10.00  sec  19.1 MBytes  16.0 Mbits/sec  216   11.3 KBytes       
+[SUM]   0.00-10.00  sec  38.2 MBytes  32.0 Mbits/sec  435             
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-10.00  sec  19.1 MBytes  16.0 Mbits/sec  219             sender
+[  5]   0.00-10.00  sec  19.0 MBytes  15.9 Mbits/sec                  receiver
+[  7]   0.00-10.00  sec  19.1 MBytes  16.0 Mbits/sec  216             sender
+[  7]   0.00-10.00  sec  19.0 MBytes  15.9 Mbits/sec                  receiver
+[SUM]   0.00-10.00  sec  38.2 MBytes  32.0 Mbits/sec  435             sender
+[SUM]   0.00-10.00  sec  38.0 MBytes  31.9 Mbits/sec                  receiver
+
+iperf Done.
+
+cake hosts (two dst IPs)
+------------------------
+
+qdisc cake 804c: root refcnt 2 bandwidth 50Mbit diffserv3 hosts nonat nowash no-ack-filter split-gso rtt 100.0ms raw overhead 0 
+iperf3 -P 1 -C cubic -B 10.7.0.1 -c 10.7.1.1 -p 5101
+iperf3 -P 2 -C reno -B 10.7.0.1 -c 10.7.1.2 -p 5102
+
+Connecting to host 10.7.1.1, port 5101
+[  5] local 10.7.0.1 port 51985 connected to 10.7.1.1 port 5101
+[ ID] Interval           Transfer     Bitrate         Retr  Cwnd
+[  5]   0.00-10.00  sec  28.6 MBytes  24.0 Mbits/sec  120   18.4 KBytes       
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-10.00  sec  28.6 MBytes  24.0 Mbits/sec  120             sender
+[  5]   0.00-10.01  sec  28.5 MBytes  23.9 Mbits/sec                  receiver
+
+iperf Done.
+
+Connecting to host 10.7.1.2, port 5102
+[  5] local 10.7.0.1 port 55495 connected to 10.7.1.2 port 5102
+[  7] local 10.7.0.1 port 48045 connected to 10.7.1.2 port 5102
+[ ID] Interval           Transfer     Bitrate         Retr  Cwnd
+[  5]   0.00-10.00  sec  15.8 MBytes  13.2 Mbits/sec  298   11.3 KBytes       
+[  7]   0.00-10.00  sec  13.7 MBytes  11.5 Mbits/sec  275   8.48 KBytes       
+[SUM]   0.00-10.00  sec  29.5 MBytes  24.7 Mbits/sec  573             
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-10.00  sec  15.8 MBytes  13.2 Mbits/sec  298             sender
+[  5]   0.00-10.01  sec  14.8 MBytes  12.4 Mbits/sec                  receiver
+[  7]   0.00-10.00  sec  13.7 MBytes  11.5 Mbits/sec  275             sender
+[  7]   0.00-10.01  sec  13.7 MBytes  11.5 Mbits/sec                  receiver
+[SUM]   0.00-10.00  sec  29.5 MBytes  24.7 Mbits/sec  573             sender
+[SUM]   0.00-10.01  sec  28.5 MBytes  23.9 Mbits/sec                  receiver
+
+iperf Done.
+
+cake srchost (two dst IPs)
+--------------------------
+
+qdisc cake 804d: root refcnt 2 bandwidth 50Mbit diffserv3 srchost nonat nowash no-ack-filter split-gso rtt 100.0ms raw overhead 0 
+iperf3 -P 1 -C cubic -B 10.7.0.1 -c 10.7.1.1 -p 5101
+iperf3 -P 2 -C reno -B 10.7.0.1 -c 10.7.1.2 -p 5102
+
+Connecting to host 10.7.1.1, port 5101
+[  5] local 10.7.0.1 port 52141 connected to 10.7.1.1 port 5101
+[ ID] Interval           Transfer     Bitrate         Retr  Cwnd
+[  5]   0.00-10.00  sec  17.5 MBytes  14.7 Mbits/sec  188   9.90 KBytes       
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-10.00  sec  17.5 MBytes  14.7 Mbits/sec  188             sender
+[  5]   0.00-10.01  sec  17.4 MBytes  14.6 Mbits/sec                  receiver
+
+iperf Done.
+
+Connecting to host 10.7.1.2, port 5102
+[  5] local 10.7.0.1 port 53303 connected to 10.7.1.2 port 5102
+[  7] local 10.7.0.1 port 35049 connected to 10.7.1.2 port 5102
+[ ID] Interval           Transfer     Bitrate         Retr  Cwnd
+[  5]   0.00-10.00  sec  19.2 MBytes  16.1 Mbits/sec  247   14.1 KBytes       
+[  7]   0.00-10.00  sec  21.1 MBytes  17.7 Mbits/sec  244   12.7 KBytes       
+[SUM]   0.00-10.00  sec  40.3 MBytes  33.8 Mbits/sec  491             
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-10.00  sec  19.2 MBytes  16.1 Mbits/sec  247             sender
+[  5]   0.00-10.01  sec  19.1 MBytes  16.0 Mbits/sec                  receiver
+[  7]   0.00-10.00  sec  21.1 MBytes  17.7 Mbits/sec  244             sender
+[  7]   0.00-10.01  sec  20.6 MBytes  17.2 Mbits/sec                  receiver
+[SUM]   0.00-10.00  sec  40.3 MBytes  33.8 Mbits/sec  491             sender
+[SUM]   0.00-10.01  sec  39.6 MBytes  33.2 Mbits/sec                  receiver
+
+iperf Done.
+
+cake dual-srchost (two dst IPs)
+-------------------------------
+
+qdisc cake 804e: root refcnt 2 bandwidth 50Mbit diffserv3 dual-srchost nonat nowash no-ack-filter split-gso rtt 100.0ms raw overhead 0 
+iperf3 -P 1 -C cubic -B 10.7.0.1 -c 10.7.1.1 -p 5101
+iperf3 -P 2 -C reno -B 10.7.0.1 -c 10.7.1.2 -p 5102
+
+Connecting to host 10.7.1.1, port 5101
+[  5] local 10.7.0.1 port 58033 connected to 10.7.1.1 port 5101
+[ ID] Interval           Transfer     Bitrate         Retr  Cwnd
+[  5]   0.00-10.00  sec  19.1 MBytes  16.0 Mbits/sec  170   14.1 KBytes       
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-10.00  sec  19.1 MBytes  16.0 Mbits/sec  170             sender
+[  5]   0.00-10.00  sec  19.0 MBytes  16.0 Mbits/sec                  receiver
+
+iperf Done.
+
+Connecting to host 10.7.1.2, port 5102
+[  5] local 10.7.0.1 port 52453 connected to 10.7.1.2 port 5102
+[  7] local 10.7.0.1 port 41977 connected to 10.7.1.2 port 5102
+[ ID] Interval           Transfer     Bitrate         Retr  Cwnd
+[  5]   0.00-10.00  sec  19.1 MBytes  16.0 Mbits/sec  219   14.1 KBytes       
+[  7]   0.00-10.00  sec  19.1 MBytes  16.0 Mbits/sec  216   14.1 KBytes       
+[SUM]   0.00-10.00  sec  38.2 MBytes  32.0 Mbits/sec  435             
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-10.00  sec  19.1 MBytes  16.0 Mbits/sec  219             sender
+[  5]   0.00-10.00  sec  19.0 MBytes  15.9 Mbits/sec                  receiver
+[  7]   0.00-10.00  sec  19.1 MBytes  16.0 Mbits/sec  216             sender
+[  7]   0.00-10.00  sec  19.0 MBytes  15.9 Mbits/sec                  receiver
+[SUM]   0.00-10.00  sec  38.2 MBytes  32.0 Mbits/sec  435             sender
+[SUM]   0.00-10.00  sec  38.0 MBytes  31.9 Mbits/sec                  receiver
+
+iperf Done.
+
+cake dsthost (two dst IPs)
+--------------------------
+
+qdisc cake 804f: root refcnt 2 bandwidth 50Mbit diffserv3 dsthost nonat nowash no-ack-filter split-gso rtt 100.0ms raw overhead 0 
+iperf3 -P 1 -C cubic -B 10.7.0.1 -c 10.7.1.1 -p 5101
+iperf3 -P 2 -C reno -B 10.7.0.1 -c 10.7.1.2 -p 5102
+
+Connecting to host 10.7.1.1, port 5101
+[  5] local 10.7.0.1 port 56019 connected to 10.7.1.1 port 5101
+[ ID] Interval           Transfer     Bitrate         Retr  Cwnd
+[  5]   0.00-10.00  sec  28.6 MBytes  24.0 Mbits/sec  120   18.4 KBytes       
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-10.00  sec  28.6 MBytes  24.0 Mbits/sec  120             sender
+[  5]   0.00-10.01  sec  28.5 MBytes  23.9 Mbits/sec                  receiver
+
+iperf Done.
+
+Connecting to host 10.7.1.2, port 5102
+[  5] local 10.7.0.1 port 36303 connected to 10.7.1.2 port 5102
+[  7] local 10.7.0.1 port 40235 connected to 10.7.1.2 port 5102
+[ ID] Interval           Transfer     Bitrate         Retr  Cwnd
+[  5]   0.00-10.00  sec  16.2 MBytes  13.6 Mbits/sec  280   8.48 KBytes       
+[  7]   0.00-10.00  sec  13.4 MBytes  11.2 Mbits/sec  279   9.90 KBytes       
+[SUM]   0.00-10.00  sec  29.6 MBytes  24.8 Mbits/sec  559             
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-10.00  sec  16.2 MBytes  13.6 Mbits/sec  280             sender
+[  5]   0.00-10.01  sec  15.2 MBytes  12.8 Mbits/sec                  receiver
+[  7]   0.00-10.00  sec  13.4 MBytes  11.2 Mbits/sec  279             sender
+[  7]   0.00-10.01  sec  13.3 MBytes  11.2 Mbits/sec                  receiver
+[SUM]   0.00-10.00  sec  29.6 MBytes  24.8 Mbits/sec  559             sender
+[SUM]   0.00-10.01  sec  28.5 MBytes  23.9 Mbits/sec                  receiver
+
+iperf Done.
+
+cake dual-dsthost (two dst IPs)
+-------------------------------
+
+qdisc cake 8050: root refcnt 2 bandwidth 50Mbit diffserv3 dual-dsthost nonat nowash no-ack-filter split-gso rtt 100.0ms raw overhead 0 
+iperf3 -P 1 -C cubic -B 10.7.0.1 -c 10.7.1.1 -p 5101
+iperf3 -P 2 -C reno -B 10.7.0.1 -c 10.7.1.2 -p 5102
+
+Connecting to host 10.7.1.1, port 5101
+[  5] local 10.7.0.1 port 43095 connected to 10.7.1.1 port 5101
+[ ID] Interval           Transfer     Bitrate         Retr  Cwnd
+[  5]   0.00-10.00  sec  28.6 MBytes  24.0 Mbits/sec  120   18.4 KBytes       
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-10.00  sec  28.6 MBytes  24.0 Mbits/sec  120             sender
+[  5]   0.00-10.00  sec  28.5 MBytes  23.9 Mbits/sec                  receiver
+
+iperf Done.
+
+Connecting to host 10.7.1.2, port 5102
+[  5] local 10.7.0.1 port 53537 connected to 10.7.1.2 port 5102
+[  7] local 10.7.0.1 port 38589 connected to 10.7.1.2 port 5102
+[ ID] Interval           Transfer     Bitrate         Retr  Cwnd
+[  5]   0.00-10.00  sec  14.3 MBytes  12.0 Mbits/sec  225   12.7 KBytes       
+[  7]   0.00-10.00  sec  14.3 MBytes  12.0 Mbits/sec  226   12.7 KBytes       
+[SUM]   0.00-10.00  sec  28.6 MBytes  24.0 Mbits/sec  451             
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-10.00  sec  14.3 MBytes  12.0 Mbits/sec  225             sender
+[  5]   0.00-10.00  sec  14.3 MBytes  12.0 Mbits/sec                  receiver
+[  7]   0.00-10.00  sec  14.3 MBytes  12.0 Mbits/sec  226             sender
+[  7]   0.00-10.00  sec  14.3 MBytes  12.0 Mbits/sec                  receiver
+[SUM]   0.00-10.00  sec  28.6 MBytes  24.0 Mbits/sec  451             sender
+[SUM]   0.00-10.00  sec  28.5 MBytes  23.9 Mbits/sec                  receiver
+
+iperf Done.
+
+cake triple-isolate (three src IPs, two dst IPs)
+------------------------------------------------
+
+qdisc cake 8051: root refcnt 2 bandwidth 50Mbit diffserv3 triple-isolate nonat nowash no-ack-filter split-gso rtt 100.0ms raw overhead 0 
+iperf3 -P 2 -C cubic -B 10.7.0.1 -c 10.7.1.1 -p 5101
+iperf3 -P 2 -C reno -B 10.7.0.1 -c 10.7.1.2 -p 5102
+iperf3 -P 2 -C cubic -B 10.7.0.2 -c 10.7.1.1 -p 5103
+iperf3 -P 2 -C reno -B 10.7.0.3 -c 10.7.1.2 -p 5104
+
+Connecting to host 10.7.1.1, port 5101
+[  5] local 10.7.0.1 port 46635 connected to 10.7.1.1 port 5101
+[  7] local 10.7.0.1 port 58339 connected to 10.7.1.1 port 5101
+[ ID] Interval           Transfer     Bitrate         Retr  Cwnd
+[  5]   0.00-10.00  sec  7.17 MBytes  6.02 Mbits/sec  341   4.24 KBytes       
+[  7]   0.00-10.00  sec  7.18 MBytes  6.02 Mbits/sec  336   2.83 KBytes       
+[SUM]   0.00-10.00  sec  14.4 MBytes  12.0 Mbits/sec  677             
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-10.00  sec  7.17 MBytes  6.02 Mbits/sec  341             sender
+[  5]   0.00-10.00  sec  7.12 MBytes  5.97 Mbits/sec                  receiver
+[  7]   0.00-10.00  sec  7.18 MBytes  6.02 Mbits/sec  336             sender
+[  7]   0.00-10.00  sec  7.12 MBytes  5.97 Mbits/sec                  receiver
+[SUM]   0.00-10.00  sec  14.4 MBytes  12.0 Mbits/sec  677             sender
+[SUM]   0.00-10.00  sec  14.2 MBytes  11.9 Mbits/sec                  receiver
+
+iperf Done.
+
+Connecting to host 10.7.1.2, port 5102
+[  5] local 10.7.0.1 port 59173 connected to 10.7.1.2 port 5102
+[  7] local 10.7.0.1 port 47519 connected to 10.7.1.2 port 5102
+[ ID] Interval           Transfer     Bitrate         Retr  Cwnd
+[  5]   0.00-10.00  sec  7.16 MBytes  6.00 Mbits/sec  451   4.24 KBytes       
+[  7]   0.00-10.00  sec  7.19 MBytes  6.03 Mbits/sec  456   5.66 KBytes       
+[SUM]   0.00-10.00  sec  14.3 MBytes  12.0 Mbits/sec  907             
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-10.00  sec  7.16 MBytes  6.00 Mbits/sec  451             sender
+[  5]   0.00-10.00  sec  7.13 MBytes  5.98 Mbits/sec                  receiver
+[  7]   0.00-10.00  sec  7.19 MBytes  6.03 Mbits/sec  456             sender
+[  7]   0.00-10.00  sec  7.13 MBytes  5.98 Mbits/sec                  receiver
+[SUM]   0.00-10.00  sec  14.3 MBytes  12.0 Mbits/sec  907             sender
+[SUM]   0.00-10.00  sec  14.3 MBytes  12.0 Mbits/sec                  receiver
+
+iperf Done.
+
+Connecting to host 10.7.1.1, port 5103
+[  5] local 10.7.0.2 port 33459 connected to 10.7.1.1 port 5103
+[  7] local 10.7.0.2 port 59951 connected to 10.7.1.1 port 5103
+[ ID] Interval           Transfer     Bitrate         Retr  Cwnd
+[  5]   0.00-10.00  sec  7.17 MBytes  6.02 Mbits/sec  333   5.66 KBytes       
+[  7]   0.00-10.00  sec  7.18 MBytes  6.03 Mbits/sec  329   4.24 KBytes       
+[SUM]   0.00-10.00  sec  14.4 MBytes  12.0 Mbits/sec  662             
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-10.00  sec  7.17 MBytes  6.02 Mbits/sec  333             sender
+[  5]   0.00-10.00  sec  7.13 MBytes  5.98 Mbits/sec                  receiver
+[  7]   0.00-10.00  sec  7.18 MBytes  6.03 Mbits/sec  329             sender
+[  7]   0.00-10.00  sec  7.12 MBytes  5.97 Mbits/sec                  receiver
+[SUM]   0.00-10.00  sec  14.4 MBytes  12.0 Mbits/sec  662             sender
+[SUM]   0.00-10.00  sec  14.3 MBytes  12.0 Mbits/sec                  receiver
+
+iperf Done.
+
+Connecting to host 10.7.1.2, port 5104
+[  5] local 10.7.0.3 port 41985 connected to 10.7.1.2 port 5104
+[  7] local 10.7.0.3 port 56731 connected to 10.7.1.2 port 5104
+[ ID] Interval           Transfer     Bitrate         Retr  Cwnd
+[  5]   0.00-10.00  sec  7.16 MBytes  6.01 Mbits/sec  454   8.48 KBytes       
+[  7]   0.00-10.00  sec  7.17 MBytes  6.01 Mbits/sec  456   7.07 KBytes       
+[SUM]   0.00-10.00  sec  14.3 MBytes  12.0 Mbits/sec  910             
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-10.00  sec  7.16 MBytes  6.01 Mbits/sec  454             sender
+[  5]   0.00-10.01  sec  7.13 MBytes  5.97 Mbits/sec                  receiver
+[  7]   0.00-10.00  sec  7.17 MBytes  6.01 Mbits/sec  456             sender
+[  7]   0.00-10.01  sec  7.13 MBytes  5.97 Mbits/sec                  receiver
+[SUM]   0.00-10.00  sec  14.3 MBytes  12.0 Mbits/sec  910             sender
+[SUM]   0.00-10.01  sec  14.3 MBytes  11.9 Mbits/sec                  receiver
+
+iperf Done.
